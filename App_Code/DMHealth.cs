@@ -48,18 +48,18 @@ public static class DMHealth
         return i;
     }
 
-    public static void RemoveToStDataRetention(string sPID)//名字取錯？
+    public static void RemoveToStDataRetention(string sPID)
     {
         string sqlReplaceTemplate;
         string sqlReplace;
 
-        DataTable dt = CheckStinDataRetention(sPID);//檢查DataRetention有無該位學生
+        DataTable dt = CheckStinDataRetention(sPID);
         using (SqlConnection cnn = new SqlConnection(Se.sMyConnStr))
         {
             cnn.Open();
             if (dt == null)
             {
-                sqlReplaceTemplate = "Insert into DataRetention SELECT PID,Guy,SexID,Years,ClassID,NULL Seat,Birthday,Dad,Mom,Guardian,Zip,Tel1,Address,EmergencyCall,NewClassID,NewSeat,Blood,GuyID,Aborigine,StMemos FROM[Health].[dbo].[St] where PID = '{0}' ";
+                sqlReplaceTemplate = "Insert into DataRetention SELECT PID,Guy,SexID,Years,ClassID,Seat,Birthday,Dad,Mom,Guardian,Zip,Tel1,Address,EmergencyCall,NewClassID,NewSeat,Blood,GuyID,Aborigine,StMemos FROM[Health].[dbo].[St] where PID = '{0}' ";
                 sqlReplace = string.Format(sqlReplaceTemplate, sPID);
                 using (SqlCommand cmdReplace = new SqlCommand(sqlReplace, cnn))
                 {
@@ -115,7 +115,7 @@ public static class DMHealth
             cnn.Open();
             using (SqlCommand cmdReplace = new SqlCommand(sqlReplace, cnn))
             {
-                if (cmdReplace.ExecuteScalar() != null)//ExecuteScalar回傳該指令第一行資料
+                if (cmdReplace.ExecuteScalar() != null)
                 {
                     string sSql = "select * from St where PID = '{0}' ";
                     string sSql1 = string.Format(sSql, sPID);
@@ -148,7 +148,6 @@ public static class DMHealth
                 cmdReplace.ExecuteNonQuery();
             }
         }
-        
     }
 
     public static void DelRetentionRestoreSt(string sPID)
@@ -156,7 +155,7 @@ public static class DMHealth
         DelRetentionRestoreSt(sPID, "0", "1", "1");
     }
 
-    public static void DelRetentionRestoreSt(string sPID, string Years, string ClassID, string Seat)//後面三個參數？
+    public static void DelRetentionRestoreSt(string sPID, string Years, string ClassID, string Seat)
     {
         string sqlReplaceTemplate;
         string sqlReplace;
@@ -165,10 +164,10 @@ public static class DMHealth
         cnn.Open();
         if (dt == null)
         {
-            sqlReplaceTemplate = @"Insert into St SELECT PID,Guy,SexID,Years,1 ClassID,1 Seat,Birthday,Dad,Mom,Guardian,Zip,
+            sqlReplaceTemplate = @"Insert into St SELECT PID,Guy,SexID,{0},{1},{2},Birthday,Dad,Mom,Guardian,Zip,
                                   Tel1,Address,EmergencyCall,NewClassID,NewSeat,Blood,GuyID,Aborigine,StMemos,0 Deled FROM DataRetention 
-                                  where PID = '{0}'";
-            sqlReplace = string.Format(sqlReplaceTemplate, sPID);
+                                  where PID = '{3}'";
+            sqlReplace = string.Format(sqlReplaceTemplate, Years, ClassID, Seat, sPID);
             SqlCommand cmdReplace = new SqlCommand(sqlReplace, cnn);
             cmdReplace.ExecuteNonQuery();
         }
@@ -243,5 +242,23 @@ public static class DMHealth
         cnn.Open();
         SqlCommand cmdReplace = new SqlCommand(sqlReplace, cnn);
         cmdReplace.ExecuteNonQuery();
+    }
+    public static bool isSameGradeClassSeatInTable(string dataBaseTableName, string years, string classID, string seat)
+    {
+        string sqlReplaceTemplate = "select * from {0} where Years = {1} AND ClassID = {2} AND Seat = '{3}'";
+        string sqlReplace = string.Format(sqlReplaceTemplate, dataBaseTableName, years, classID, seat);
+
+        using (SqlConnection cnn = new SqlConnection(Se.sMyConnStr))
+        {
+            cnn.Open();
+            using (SqlCommand cmdReplace = new SqlCommand(sqlReplace, cnn))
+            {
+                if (cmdReplace.ExecuteScalar() != null)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
     }
 }

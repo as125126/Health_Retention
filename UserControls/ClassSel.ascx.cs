@@ -173,7 +173,8 @@ public partial class ClassSel_ascx : System.Web.UI.UserControl
             ddlGradeClassGrad.Visible = true;
             ddlGradeClassGrad.SelectedIndex = 0;
         }
-        else {
+        else
+        {
             Se.siYearsSel = iYears;
             Se.siGradeIDSel = HealthShareUtil.YearsToGradeID(iYears);
             Se.siClassIDSel = (short)iClassID;
@@ -207,4 +208,40 @@ public partial class ClassSel_ascx : System.Web.UI.UserControl
             AfterClassChange(this, e);
     }
     #endregion
+    public void updateStatus()
+    {
+        if (Se.siYearsSel == 0)
+        {
+            ddlGradeClass.SelectedIndex = 0;
+            ddlGradeClassGrad.SelectedIndex = 0;
+            ddlGradeClassGrad.Visible = false;
+        }
+        else
+        {
+            string sSel = Se.siYearsSel.ToString();
+            ListItem crItemGrad = ddlGradeClassGrad.Items.FindByValue(sSel);
+            ListItem crItem = ddlGradeClass.Items.FindByValue(sSel);
+            try
+            {
+                if (crItem != null)
+                {
+                    crItem.Selected = true;
+                    ddlGradeClassGrad.Visible = false;
+                }
+                else
+                {
+                    ddlGradeClass.SelectedIndex = ddlGradeClass.Items.Count - 1;
+                    crItemGrad.Selected = true;
+                    ddlGradeClassGrad.Visible = true;
+                }
+            }
+            catch
+            {
+                ddlGradeClass.SelectedIndex = 0;
+                ddlGradeClassGrad.SelectedIndex = 0;
+                Se.siYearsSel = 0;
+                Se.siGradeIDSel = HealthShareUtil.YearsToGradeID(0);
+            }
+        }
+    }
 }

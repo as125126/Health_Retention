@@ -12,6 +12,8 @@ public partial class StHome : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
+            Se.siYearsSel = 0;//初始選單設定
+            //ClassSel1.updateStatus();//初始選單設定
             DMHealth.ColumnSet(gvSt.Columns);
         }
     }
