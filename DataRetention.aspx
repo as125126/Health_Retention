@@ -40,7 +40,8 @@
             <asp:Label ID="labReCoverHint" runat="server" visible="false" ForeColor="Blue" >請設定學生回復後的班級座號</asp:Label>
             <br />
             <asp:Label ID="labReGradeClass" runat="server" ForeColor="Black" Visible="false">選擇要回復的班級年級 : </asp:Label>
-            <uc1:ClassSel ID="ClassSel1" runat="server" Visible="false"/>
+            <asp:DropDownList ID="selectGrade" runat="server" DataSourceID="Grade_ods" DataTextField="YearsGradeClass" DataValueField="YearsClass" Visible="False"></asp:DropDownList>
+            <asp:ObjectDataSource ID="Grade_ods" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="HealthShare.dsSchoolTableAdapters.ClassSelTableAdapter"></asp:ObjectDataSource>
             <asp:Label ID="labReSeat" runat="server" ForeColor="Black" Visible="false">設定回復後的座號 : </asp:Label>
             <asp:TextBox ID="txtSeatNum" runat="server" placeholder="座號" class="txt" MaxLength="2" Width="30px" Visible="false"></asp:TextBox>
             <asp:Button ID="btnReCover" runat="server" OnClick="btnReCover_Click" Text="回復" class="btn" Visible="false" OnClientClick="return recoverFieldCheck()"/>
@@ -170,7 +171,7 @@
         </div>
         <script>
             function recoverFieldCheck() {//防呆及確認回復視窗
-                var ddlistId = document.getElementById('<%= ClassSel1.FindControl("ddlGradeClass").ClientID %>');
+                var ddlistId = document.getElementById('<%= selectGrade.ClientID %>');
                 var reGradeAndClass = ddlistId.options[ddlistId.selectedIndex].text;
                 var reSeat = document.getElementById('<%= txtSeatNum.ClientID %>').value;
                 var s = '您確定要回復到' +

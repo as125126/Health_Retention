@@ -175,9 +175,9 @@ public partial class ClassSel_ascx : System.Web.UI.UserControl
         }
         else
         {
-            Se.siYearsSel = iYears;
-            Se.siGradeIDSel = HealthShareUtil.YearsToGradeID(iYears);
-            Se.siClassIDSel = (short)iClassID;
+            Se.siYearsSel = iYears;//學年
+            Se.siGradeIDSel = HealthShareUtil.YearsToGradeID(iYears);//不知道幹嘛的
+            Se.siClassIDSel = (short)iClassID;//班級
             ddlGradeClassGrad.Visible = false;
         }
 

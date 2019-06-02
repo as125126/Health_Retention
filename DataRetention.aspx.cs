@@ -28,8 +28,6 @@ public partial class DataRetention : System.Web.UI.Page
     {
         if (txtSeatNum.Visible)//"回復學生介面"狀態下不需要做下面的判斷處理
             return;
-        if (!IsPostBack)//第一次載入時設定(班級年級)下拉式選單##隱藏掉"歷屆班級"選項
-            ((DropDownList)ClassSel1.FindControl("ddlGradeClass")).Items[((DropDownList)ClassSel1.FindControl("ddlGradeClass")).Items.Count - 1].Enabled = false;
         if (!string.IsNullOrEmpty(txtSearch.Text))//如果輸入查詢時，突然又想要變成選單查詢。(txtSearch的處理)
             txtSearch.Text = string.Empty;
         if (!isNeedReBind)
@@ -111,8 +109,7 @@ public partial class DataRetention : System.Web.UI.Page
     protected void btnReCover_Click(object sender, EventArgs e)
     {
         String sPID = gvSt.SelectedDataKey[0].ToString();
-        DropDownList ddlGradeClass = ((DropDownList)ClassSel1.FindControl("ddlGradeClass"));
-        String[] reGradAndClass = ddlGradeClass.SelectedValue.Split(',');
+        String[] reGradAndClass = selectGrade.SelectedValue.Split(',');
         String reSeat = txtSeatNum.Text.Trim();
 
         if (!DMHealth.isSameGradeClassSeatInTable("St", reGradAndClass[0], reGradAndClass[1], reSeat))//檢查學生
@@ -120,7 +117,7 @@ public partial class DataRetention : System.Web.UI.Page
             DMHealth.DelRetentionRestoreSt(sPID, reGradAndClass[0], reGradAndClass[1], reSeat);//回復資料
             //確認學生基本資料表是否真的有回復成功，有的話會有回復班級提醒，沒有的話跳出"回復失敗"
             this.ClientScript.RegisterStartupScript(this.GetType(), "DuplicateSeatAlert", "alert('已回復至" +
-                ddlGradeClass.SelectedItem.Text +
+                selectGrade.SelectedItem.Text +
                 reSeat +
                 "號。')", true);
 
@@ -132,7 +129,7 @@ public partial class DataRetention : System.Web.UI.Page
         }
         else//告視窗 ex: "X年X班X號已存在!! 請確認後再做設定!!"
             this.ClientScript.RegisterStartupScript(this.GetType(), "DuplicateSeatAlert", "alert('" +
-                ddlGradeClass.SelectedItem.Text + reSeat +
+                selectGrade.SelectedItem.Text + reSeat +
                 "號已經存在!!\\n" +
                 "請確認後再做設定!!')", true);
     }
@@ -162,7 +159,7 @@ public partial class DataRetention : System.Web.UI.Page
         txtSearch.Visible = !txtSearch.Visible;
         btnSearch.Visible = !btnSearch.Visible;
         GradeSel1.Visible = !GradeSel1.Visible;
-        ClassSel1.Visible = !ClassSel1.Visible;
+        selectGrade.Visible = !selectGrade.Visible;
         btnReCover.Visible = !btnReCover.Visible;
         txtSeatNum.Text = string.Empty;
         btnCancelReCover.Visible = !btnCancelReCover.Visible;
