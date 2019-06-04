@@ -20,6 +20,8 @@ public partial class DataRetention : System.Web.UI.Page
             //ClassSel1.updateStatus();//初始選單設定
             //GradeSel1.updateStatus();//初始選單設定
             DMHealth.ColumnSet(gvSt.Columns);
+            selectGradeClass.DataSourceID = "GradeClass_ods";
+            selectGradeClass.DataBind();
         }
         labMessage.Visible = false;
     }
@@ -53,7 +55,7 @@ public partial class DataRetention : System.Web.UI.Page
     #region 切換到資料保留區"回復學生介面"
     protected void gvSt_SelectedIndexChanged(object sender, EventArgs e)
     {
-        changeGvView(false);
+
         changeDataRetentionUI(false);//切換到資料保留區"回復學生介面"
         //this.ClientScript.RegisterStartupScript(this.GetType(), "", "", true);
     }
@@ -109,36 +111,32 @@ public partial class DataRetention : System.Web.UI.Page
     protected void btnReCover_Click(object sender, EventArgs e)
     {
         String sPID = gvSt.SelectedDataKey[0].ToString();
-        String[] reGradAndClass = selectGrade.SelectedValue.Split(',');
+        String[] reGradAndClass = selectGradeClass.SelectedValue.Split(',');
         String reSeat = txtSeatNum.Text.Trim();
 
-        if (!DMHealth.isSameGradeClassSeatInTable("St", reGradAndClass[0], reGradAndClass[1], reSeat))//檢查學生
+        if (hasEmptyRecoverField())
+            return;
+        if (DMHealth.isSameGradeClassSeatInTable("St", reGradAndClass[0], reGradAndClass[1], reSeat))
         {
-            DMHealth.DelRetentionRestoreSt(sPID, reGradAndClass[0], reGradAndClass[1], reSeat);//回復資料
-            //確認學生基本資料表是否真的有回復成功，有的話會有回復班級提醒，沒有的話跳出"回復失敗"
-            this.ClientScript.RegisterStartupScript(this.GetType(), "DuplicateSeatAlert", "alert('已回復至" +
-                selectGrade.SelectedItem.Text +
-                reSeat +
-                "號。')", true);
-
-            changeGvView(true);
-            gvSt.DataSource = ods;//可以改
-            gvSt.DataBind();
-            changeDataRetentionUI(true);
-            //切換介面
+            ladRecoverHintMassage.Text = selectGradeClass.SelectedItem.Text + reSeat + "號已經存在!!\n請確認後再做設定!!";
+            return;
         }
-        else//告視窗 ex: "X年X班X號已存在!! 請確認後再做設定!!"
-            this.ClientScript.RegisterStartupScript(this.GetType(), "DuplicateSeatAlert", "alert('" +
-                selectGrade.SelectedItem.Text + reSeat +
-                "號已經存在!!\\n" +
-                "請確認後再做設定!!')", true);
+        DMHealth.DelRetentionRestoreSt(sPID, reGradAndClass[0], reGradAndClass[1], reSeat);//回復資料
+        //確認學生基本資料表是否真的有回復成功，有的話會有回復班級提醒，沒有的話跳出"回復失敗"
+        this.ClientScript.RegisterStartupScript(this.GetType(), "DuplicateSeatAlert", "alert('已回復至" +
+            selectGradeClass.SelectedItem.Text +
+            reSeat +
+            "號。')", true);
+        //changeGvView(true);
+        changeDataRetentionUI(true);
+        gvSt.DataSource = ods;//可以改
+        gvSt.DataBind();
     }
     #endregion
 
     #region 切換到資料保留區"搜尋介面"
     protected void btnCancelReCover_Click(object sender, EventArgs e)
     {
-        changeGvView(true);
         changeDataRetentionUI(true);
     }
     #endregion
@@ -152,21 +150,29 @@ public partial class DataRetention : System.Web.UI.Page
     */
     private void changeDataRetentionUI(bool UICode)
     {
+        changeGvView(UICode);
         isNeedReBind = true;
         labReGradeClass.Visible = !labReGradeClass.Visible;
         txtSeatNum.Visible = !txtSeatNum.Visible;
         labReSeat.Visible = !labReSeat.Visible;
+        ladRecoverHintMassage.Visible = !ladRecoverHintMassage.Visible;
         txtSearch.Visible = !txtSearch.Visible;
         btnSearch.Visible = !btnSearch.Visible;
         GradeSel1.Visible = !GradeSel1.Visible;
-        selectGrade.Visible = !selectGrade.Visible;
+        selectGradeClass.Visible = !selectGradeClass.Visible;
         btnReCover.Visible = !btnReCover.Visible;
         txtSeatNum.Text = string.Empty;
         btnCancelReCover.Visible = !btnCancelReCover.Visible;
         labReCoverHint.Visible = !labReCoverHint.Visible;
 
-        if (UICode)//設定選單是否保留gvSt鎖定的學生
+        if (UICode)
+        {//設定選單是否保留gvSt鎖定的學生
             gvSt.SelectedIndex = -1;
+            ladRecoverHintMassage.Text = string.Empty;
+        }
+        else
+            selectGradeClass.SelectedIndex = 0;
+
         //Se.siYearsSel = 0;//初始選單設定
         //ClassSel1.updateStatus();//初始選單設定
 
@@ -179,7 +185,8 @@ public partial class DataRetention : System.Web.UI.Page
 
     }
     #endregion
-    #region 改換gv的欄位顯示    /*
+
+    #region 改換gv的欄位顯示 
     /* 輸入參數[true, false]
     * false 顯示只被回復的學生
     * true 顯示所有被查詢到的學生名單
@@ -207,6 +214,23 @@ public partial class DataRetention : System.Web.UI.Page
         }
         for (int i = 0; i < gvSt.Rows.Count; i++)
             gvSt.Rows[i].Visible = (UICode | (i == gvSt.SelectedIndex) ? true : false);
+    }
+    #endregion
+
+    #region 檢查回復欄位是否有空 
+    private bool hasEmptyRecoverField()
+    {
+        if (selectGradeClass.SelectedIndex == 0)
+        {
+            ladRecoverHintMassage.Text = "請選擇班級年級!!";
+            return true;
+        }
+        if (txtSeatNum.Text.Equals(string.Empty))
+        {
+            ladRecoverHintMassage.Text = "請輸入座號!!";
+            return true;
+        }
+        return false;
     }
     #endregion
 }

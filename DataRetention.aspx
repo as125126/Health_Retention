@@ -39,17 +39,24 @@
         <div>
             <asp:Label ID="labReCoverHint" runat="server" visible="false" ForeColor="Blue" >請設定學生回復後的班級座號</asp:Label>
             <br />
-            <asp:Label ID="labReGradeClass" runat="server" ForeColor="Black" Visible="false">選擇要回復的班級年級 : </asp:Label>
-            <asp:DropDownList ID="selectGrade" runat="server" DataSourceID="Grade_ods" DataTextField="YearsGradeClass" DataValueField="YearsClass" Visible="False"></asp:DropDownList>
-            <asp:ObjectDataSource ID="Grade_ods" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="HealthShare.dsSchoolTableAdapters.ClassSelTableAdapter"></asp:ObjectDataSource>
-            <asp:Label ID="labReSeat" runat="server" ForeColor="Black" Visible="false">設定回復後的座號 : </asp:Label>
+            <br>
+            <div>
+                <asp:Label ID="labReGradeClass" runat="server" ForeColor="Black" Visible="false" Font-Bold="True">選擇要回復的班級年級 : </asp:Label>
+                <asp:DropDownList ID="selectGradeClass" runat="server" DataTextField="YearsGradeClass" DataValueField="YearsClass" Visible="False"></asp:DropDownList>
+                <asp:ObjectDataSource ID="GradeClass_ods" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="HealthShare.dsSchoolTableAdapters.ClassSelTableAdapter"></asp:ObjectDataSource>
+            </div>
+            <asp:Label ID="labReSeat" runat="server" ForeColor="Black" Visible="false" Font-Bold="True">設定回復後的座號 : </asp:Label>
             <asp:TextBox ID="txtSeatNum" runat="server" placeholder="座號" class="txt" MaxLength="2" Width="30px" Visible="false"></asp:TextBox>
-            <asp:Button ID="btnReCover" runat="server" OnClick="btnReCover_Click" Text="回復" class="btn" Visible="false" OnClientClick="return recoverFieldCheck()"/>
-            <asp:Button ID="btnCancelReCover" runat="server" OnClick="btnCancelReCover_Click" Text="取消回復" class="btn" Visible="false"/>
+            <br>
+            <div>
+               <asp:Button ID="btnReCover" runat="server" OnClick="btnReCover_Click" Text="回復" class="btn" Visible="false"/>
+               <asp:Button ID="btnCancelReCover" runat="server" OnClick="btnCancelReCover_Click" Text="取消回復" class="btn" Visible="false"/>
+            </div>
             <asp:TextBox ID="txtSearch" runat="server" placeholder="身分證、學號、姓名" class="txt"></asp:TextBox>
             <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Text="搜尋" class="btn"/>
             <asp:Label ID="labMessage" runat="server" ForeColor="Red"></asp:Label>
             <br />
+            <asp:Label ID="ladRecoverHintMassage" runat="server" ForeColor="Red" Visible ="false"></asp:Label>
             <uc2:GradeSel ID="GradeSel1" runat="server"/>
             &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
             <asp:GridView ID="gvSt" Runat="server" DataKeyNames="PID"
@@ -169,11 +176,11 @@
                 </UpdateParameters>
             </asp:ObjectDataSource>
         </div>
-        <script>
+       <!-- <script>
             function recoverFieldCheck() {//防呆及確認回復視窗
-                var ddlistId = document.getElementById('<%= selectGrade.ClientID %>');
+                var ddlistId = document.getElementById('%=selectGrade.ClientID %');
                 var reGradeAndClass = ddlistId.options[ddlistId.selectedIndex].text;
-                var reSeat = document.getElementById('<%= txtSeatNum.ClientID %>').value;
+                var reSeat = document.getElementById('%txtSeatNum.ClientID%').value;
                 var s = '您確定要回復到' +
                     reGradeAndClass +
                     reSeat +
@@ -190,7 +197,7 @@
                     return true;
                 return false;
             }
-        </script>
+        </script>-->
     </form>
 </body>
 </html>
