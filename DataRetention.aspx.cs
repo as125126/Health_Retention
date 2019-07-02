@@ -16,9 +16,6 @@ public partial class DataRetention : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            //Se.siYearsSel = 0;//初始選單設定
-            //ClassSel1.updateStatus();//初始選單設定
-            //GradeSel1.updateStatus();//初始選單設定
             DMHealth.ColumnSet(gvSt.Columns);
             selectGradeClass.DataSourceID = "GradeClass_ods";
             selectGradeClass.DataBind();
@@ -57,7 +54,6 @@ public partial class DataRetention : System.Web.UI.Page
     {
 
         changeDataRetentionUI(false);//切換到資料保留區"回復學生介面"
-        //this.ClientScript.RegisterStartupScript(this.GetType(), "", "", true);
     }
     #endregion
 
@@ -152,19 +148,12 @@ public partial class DataRetention : System.Web.UI.Page
     {
         changeGvView(UICode);
         isNeedReBind = true;
-        labReGradeClass.Visible = !labReGradeClass.Visible;
-        txtSeatNum.Visible = !txtSeatNum.Visible;
-        labReSeat.Visible = !labReSeat.Visible;
-        ladRecoverHintMassage.Visible = !ladRecoverHintMassage.Visible;
-        txtSearch.Visible = !txtSearch.Visible;
-        btnSearch.Visible = !btnSearch.Visible;
-        GradeSel1.Visible = !GradeSel1.Visible;
-        selectGradeClass.Visible = !selectGradeClass.Visible;
-        btnReCover.Visible = !btnReCover.Visible;
         txtSeatNum.Text = string.Empty;
-        btnCancelReCover.Visible = !btnCancelReCover.Visible;
-        labReCoverHint.Visible = !labReCoverHint.Visible;
 
+        if (UICode)
+            userUI.ActiveViewIndex = 0;
+        else
+            userUI.ActiveViewIndex = 1;
         if (UICode)
         {//設定選單是否保留gvSt鎖定的學生
             gvSt.SelectedIndex = -1;
@@ -172,17 +161,6 @@ public partial class DataRetention : System.Web.UI.Page
         }
         else
             selectGradeClass.SelectedIndex = 0;
-
-        //Se.siYearsSel = 0;//初始選單設定
-        //ClassSel1.updateStatus();//初始選單設定
-
-        // GradeSel1.updateStatus();//初始選單設定
-        //gvSt.Rows[gvSt.SelectedIndex].FindControl("btnRecover").Visible = !(gvSt.Rows[gvSt.SelectedIndex].FindControl("btnRecover").Visible);
-        //if (UICode)
-        //    gvSt.Width = 1000;
-        //else
-        //    gvSt.Width = 0;
-
     }
     #endregion
 

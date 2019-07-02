@@ -13,15 +13,18 @@
         padding: 5px;
         margin: 5px 0;
     }
-    .btn:hover {
-        color: white;
-        background: #20aaaa;
-    }
+
+        .btn:hover {
+            color: white;
+            background: #20aaaa;
+        }
+
     .txt {
         height: 20px;
         width: 130px;
         padding-left: 5px;
     }
+
     .Normal {
         margin-right: 0px;
     }
@@ -37,30 +40,41 @@
         <div>
             <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/StHome.aspx">學生基本資料</asp:HyperLink>
         </div>
-        <table style="height:150px">
-            <tr>
-                <td>
-                    <asp:TextBox ID="txtSearch" runat="server" placeholder="身分證、學號、姓名" class="txt"></asp:TextBox>
-                    <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Text="搜尋" class="btn" />
-                    <asp:Label ID="labMessage" runat="server" ForeColor="Red"></asp:Label>
-                    <br />
-                    <uc2:GradeSel ID="GradeSel1" runat="server" />
-                </td>
-                <td>
-                    <asp:Label ID="labReCoverHint" runat="server" Visible="false" ForeColor="Blue">請設定學生回復後的班級座號</asp:Label>
-                    <br />
-                        <asp:Label ID="labReGradeClass" runat="server" ForeColor="Black" Visible="false" Font-Bold="True">選擇要回復的班級年級 : </asp:Label>
-                        <asp:DropDownList ID="selectGradeClass" runat="server" DataTextField="YearsGradeClass" DataValueField="YearsClass" Visible="False"></asp:DropDownList>
-                        <asp:ObjectDataSource ID="GradeClass_ods" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="HealthShare.dsSchoolTableAdapters.ClassSelTableAdapter"></asp:ObjectDataSource>
-                    <asp:Label ID="labReSeat" runat="server" ForeColor="Black" Visible="false" Font-Bold="True">設定回復後的座號 : </asp:Label>
-                    <asp:TextBox ID="txtSeatNum" runat="server" placeholder="座號" class="txt" MaxLength="2" Width="30px" Visible="false"></asp:TextBox>
-                    <br>
-                        <asp:Button ID="btnReCover" runat="server" OnClick="btnReCover_Click" Text="回復" class="btn" Visible="false" />
-                        <asp:Button ID="btnCancelReCover" runat="server" OnClick="btnCancelReCover_Click" Text="取消回復" class="btn" Visible="false" />
-                    <asp:Label ID="ladRecoverHintMassage" runat="server" ForeColor="Red" Visible="false"></asp:Label>
-                </td>
-            </tr>
-        </table>
+
+        <asp:MultiView ID="userUI" runat="server" ActiveViewIndex="0">
+            <asp:View ID="SearchUI" runat="server">
+                <table style="height: 150px">
+                    <tr>
+                        <td>
+                            <asp:TextBox ID="txtSearch" runat="server" placeholder="身分證、學號、姓名" class="txt"></asp:TextBox>
+                            <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Text="搜尋" class="btn" />
+                            <asp:Label ID="labMessage" runat="server" ForeColor="Red"></asp:Label>
+                            <br />
+                            <uc2:GradeSel ID="GradeSel1" runat="server" />
+                        </td>
+                    </tr>
+                </table>
+            </asp:View>
+            <asp:View ID="RetentionUI" runat="server">
+                <table style="height: 150px">
+                    <tr>
+                        <td>
+                            <asp:Label ID="labReCoverHint" runat="server" ForeColor="Blue">請設定學生回復後的班級座號</asp:Label>
+                            <br />
+                            <asp:Label ID="labReGradeClass" runat="server" ForeColor="Black" Font-Bold="True">選擇要回復的班級年級 : </asp:Label>
+                            <asp:DropDownList ID="selectGradeClass" runat="server" DataTextField="YearsGradeClass" DataValueField="YearsClass"></asp:DropDownList>
+                            <asp:ObjectDataSource ID="GradeClass_ods" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="HealthShare.dsSchoolTableAdapters.ClassSelTableAdapter"></asp:ObjectDataSource>
+                            <asp:Label ID="labReSeat" runat="server" ForeColor="Black" Font-Bold="True">設定回復後的座號 : </asp:Label>
+                            <asp:TextBox ID="txtSeatNum" runat="server" placeholder="座號" class="txt" MaxLength="2" Width="30px"></asp:TextBox>
+                            <br>
+                            <asp:Button ID="btnReCover" runat="server" OnClick="btnReCover_Click" Text="回復" class="btn" />
+                            <asp:Button ID="btnCancelReCover" runat="server" OnClick="btnCancelReCover_Click" Text="取消回復" class="btn" />
+                            <asp:Label ID="ladRecoverHintMassage" runat="server" ForeColor="Red"></asp:Label>
+                        </td>
+                    </tr>
+                </table>
+            </asp:View>
+        </asp:MultiView>
         <asp:GridView ID="gvSt" runat="server" DataKeyNames="PID"
             AutoGenerateColumns="False" BackColor="White" ForeColor="Black"
             BorderWidth="1px" GridLines="Vertical" CellPadding="4" BorderStyle="None"
@@ -177,7 +191,6 @@
                 <asp:Parameter Name="Original_PID" Type="String" />
             </UpdateParameters>
         </asp:ObjectDataSource>
-        </div>
     </form>
 </body>
 </html>
