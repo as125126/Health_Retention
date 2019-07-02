@@ -82,7 +82,7 @@
             return num;
         }
 
-        [DebuggerNonUserCode, GeneratedCode("System.Data.Design.TypedDataSetGenerator", "4.0.0.0"), HelpKeyword("vs.data.TableAdapter"), DataObjectMethod(DataObjectMethodType.Select, false)]
+        //[DebuggerNonUserCode, GeneratedCode("System.Data.Design.TypedDataSetGenerator", "4.0.0.0"), HelpKeyword("vs.data.TableAdapter"), DataObjectMethod(DataObjectMethodType.Select, false)]
         public virtual dsSt.vStDataTable Get_Years(short Years)
         {
             this.Adapter.SelectCommand = this.CommandCollection[0];

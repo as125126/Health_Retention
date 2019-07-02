@@ -5,8 +5,6 @@ using System.Web.UI.WebControls;
 
 public partial class DataRetention : System.Web.UI.Page
 {
-    private bool isNeedReBind = false;//是否每次載入實都要重新DataBind()
-
     protected void Page_Init(object sender, EventArgs e)
     {
         Se.eSchoolRank = enSchoolRank.Primary;//自己設定
@@ -21,20 +19,24 @@ public partial class DataRetention : System.Web.UI.Page
             selectGradeClass.DataBind();
         }
         labMessage.Visible = false;
+        gvSt.DataSource = ods;
     }
 
     void Page_PreRender(object sender, EventArgs e)
     {
-        if (txtSeatNum.Visible)//"回復學生介面"狀態下不需要做下面的判斷處理
+        if (userUI.ActiveViewIndex == 0 )
+            gvSt.DataBind();
+        // if (userUI.ActiveViewIndex == 1)
+        /*if (txtSeatNum.Visible)//"回復學生介面"狀態下不需要做下面的判斷處理
             return;
         if (!string.IsNullOrEmpty(txtSearch.Text))//如果輸入查詢時，突然又想要變成選單查詢。(txtSearch的處理)
             txtSearch.Text = string.Empty;
         if (!isNeedReBind)
         {
-            gvSt.DataSource = ods;//可以改
+            gvSt.DataSource = ods;
             gvSt.DataBind();
         }
-        isNeedReBind = false;
+        isNeedReBind = false;*/
     }
 
     #region 顯示隱藏
@@ -52,16 +54,13 @@ public partial class DataRetention : System.Web.UI.Page
     #region 切換到資料保留區"回復學生介面"
     protected void gvSt_SelectedIndexChanged(object sender, EventArgs e)
     {
-
         changeDataRetentionUI(false);//切換到資料保留區"回復學生介面"
     }
     #endregion
 
-    #region 搜尋
+    #region 按鈕搜尋
     protected void btnSearch_Click(object sender, EventArgs e)
     {
-        isNeedReBind = true;
-
         string strSearch = txtSearch.Text.Trim();
         if (!string.IsNullOrEmpty(strSearch))
         {
@@ -84,9 +83,9 @@ public partial class DataRetention : System.Web.UI.Page
 
             if (dt.Rows.Count > 0)
             {
-                gvSt.DataSourceID = null;
+                //gvSt.DataSourceID = null;
                 gvSt.DataSource = dt;
-                gvSt.DataBind();
+                //gvSt.DataBind();
             }
             else
             {
@@ -147,13 +146,9 @@ public partial class DataRetention : System.Web.UI.Page
     private void changeDataRetentionUI(bool UICode)
     {
         changeGvView(UICode);
-        isNeedReBind = true;
         txtSeatNum.Text = string.Empty;
-
-        if (UICode)
-            userUI.ActiveViewIndex = 0;
-        else
-            userUI.ActiveViewIndex = 1;
+        userUI.ActiveViewIndex = UICode? 0:1;
+    
         if (UICode)
         {//設定選單是否保留gvSt鎖定的學生
             gvSt.SelectedIndex = -1;
