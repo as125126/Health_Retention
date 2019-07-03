@@ -5,7 +5,6 @@ using System.Web.UI.WebControls;
 
 public partial class DataRetention : System.Web.UI.Page
 {
-
     protected void Page_Init(object sender, EventArgs e)
     {
         Se.eSchoolRank = enSchoolRank.Primary;//自己設定
@@ -97,7 +96,7 @@ public partial class DataRetention : System.Web.UI.Page
         String[] reGradAndClass = selectGradeClass.SelectedValue.Split(',');
         String reSeat = txtSeatNum.Text.Trim();
 
-        if (hasEmptyRecoverField())
+        if (!checkRecoverField())
             return;
         if (DMHealth.isSameGradeClassSeatInTable("St", reGradAndClass[0], reGradAndClass[1], reSeat))
         {
@@ -135,7 +134,7 @@ public partial class DataRetention : System.Web.UI.Page
     {
         changeGvView(UICode);
         txtSeatNum.Text = string.Empty;
-        userUI.ActiveViewIndex = UICode? 0:1;
+        userUI.ActiveViewIndex = UICode? 0:1;//介面控制項切換
     
         if (UICode)
         {//設定選單是否保留gvSt鎖定的學生
@@ -179,19 +178,27 @@ public partial class DataRetention : System.Web.UI.Page
     #endregion
 
     #region 檢查回復欄位是否有空 
-    private bool hasEmptyRecoverField()
+    /* 回傳值[true,false]
+* true 回復欄位沒有問題
+* false 欄位有空白或座號輸入錯誤
+*/
+    private bool checkRecoverField()
     {
+        int i = 0;//給int.TryParse()參考數值型態用
         if (selectGradeClass.SelectedIndex == 0)
         {
             ladRecoverHintMassage.Text = "請選擇班級年級!!";
-            return true;
+            return false;
         }
         if (txtSeatNum.Text.Equals(string.Empty))
         {
             ladRecoverHintMassage.Text = "請輸入座號!!";
-            return true;
+            return false;
+        }else if(!int.TryParse(txtSeatNum.Text,out i)){
+            ladRecoverHintMassage.Text = "座號請輸入數字!!";
+            return false;
         }
-        return false;
+        return true;
     }
     #endregion
 }
