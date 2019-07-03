@@ -5,6 +5,7 @@ using System.Web.UI.WebControls;
 
 public partial class DataRetention : System.Web.UI.Page
 {
+
     protected void Page_Init(object sender, EventArgs e)
     {
         Se.eSchoolRank = enSchoolRank.Primary;//自己設定
@@ -26,17 +27,6 @@ public partial class DataRetention : System.Web.UI.Page
     {
         if (userUI.ActiveViewIndex == 0 )
             gvSt.DataBind();
-        // if (userUI.ActiveViewIndex == 1)
-        /*if (txtSeatNum.Visible)//"回復學生介面"狀態下不需要做下面的判斷處理
-            return;
-        if (!string.IsNullOrEmpty(txtSearch.Text))//如果輸入查詢時，突然又想要變成選單查詢。(txtSearch的處理)
-            txtSearch.Text = string.Empty;
-        if (!isNeedReBind)
-        {
-            gvSt.DataSource = ods;
-            gvSt.DataBind();
-        }
-        isNeedReBind = false;*/
     }
 
     #region 顯示隱藏
@@ -83,9 +73,7 @@ public partial class DataRetention : System.Web.UI.Page
 
             if (dt.Rows.Count > 0)
             {
-                //gvSt.DataSourceID = null;
                 gvSt.DataSource = dt;
-                //gvSt.DataBind();
             }
             else
             {
@@ -168,7 +156,7 @@ public partial class DataRetention : System.Web.UI.Page
     {
         if (UICode)
         {
-            gvSt.Width = 1000;
+           gvSt.Width = 1000;
             for (int i = 0; i < gvSt.Columns.Count; i++)
             {
                 gvSt.Columns[i].Visible = true;
